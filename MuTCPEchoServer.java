@@ -8,18 +8,26 @@
  */
 
 import java.io.*;
-i mport java.net.*; 
+import java.util.*;
+import java.net.*; 
 
 public class MuTCPEchoServer
 {
     /* This is the port on which the server is running */
     private int serverPort;
-	
+
+    // Keeps the groups and the clients of the entire server
+	private ArrayList<Group> groups;
+	private ArrayList<User> clients;
+
 	/* Constructor Method */
 	public MuTCPEchoServer( int port )
 	{
 		serverPort = port;
+		groups = new ArrayList<Group>;
+		clients = new ArrayList<User>;
 	}  /* End Contrucotr Method */
+
 
 	/* Listen Method */
 	public void listen()
@@ -46,6 +54,7 @@ public class MuTCPEchoServer
 				/* Try and accept the connection */
 				try {
                     connectionSocket = welcomeSocket.accept();
+                    inFromClient = new BufferedReader( new InputStreamReader( System.in ) );
                 }
                 catch (IOException e) {
                     System.out.println("Error accepting connection.");
@@ -62,7 +71,12 @@ public class MuTCPEchoServer
 	public void handleClient(Socket clientConnectionSocket)
     {
 		System.out.println("<-- Starting thread to handle connection -->");
-		new Thread(new ConnectionHandler(clientConnectionSocket)).start();
+
+		/*
+		Here initialize ArrayList<Group>, ArrayList<User> and put them in the thread constructor down there.
+		*/
+		ArrayList<>
+		new Thread(new ConnectionHandler(clientConnectionSocket, clients, groups)).start();
 	}  /* End handleClient method */
 
 	public static void main( String argv[] ) throws Exception

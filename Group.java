@@ -2,7 +2,7 @@
 
 import java.net.*;
 import java.io.*;
-import util.ArrayList;
+import java.util.ArrayList;
 
 public class Group
 {
@@ -32,12 +32,12 @@ public class Group
 
 
 	/* Getter methods */
-	public String getGroupName(String groupName)
+	public String getGroupName()
 	{
 		return groupName;
 	}
 
-	public String getAccessRights(String accessRights)
+	public String getAccessRights()
 	{
 		return accessRights;
 	}
@@ -59,20 +59,28 @@ public class Group
 		this.memberIPAddresses.add(memberIPAaddress);
 	}
 
-	public String getMembers(Arraylist<String> members)
+	public String getMembers()
 	{
 		String list = "";
 		for(int i = 0; i < members.size(); i++)
 			list = list + members.get(i) + ", ";
+		return list;
 	}
 
-	public String getMemberRights(Arraylist<String> memberRights)
+	public String getMemberRights()
 	{
 		/* Return all the rights of the group */
+		String rightsList = "";
+		for(int i = 0; i < memberRights.size(); i++)
+			rightsList = rightsList + memberRights.get(i) + ", ";
+		return rightsList;
 	}
 
 	public String getMemberIPAddress()
 	{
-		/* Get all the IP addresses */
+		String ipList = "";
+		for(int i = 0; i < memberIPAddresses.size(); i++)
+			ipList = ipList + memberIPAddresses.get(i) + ", ";
+		return ipList;
 	}
 }

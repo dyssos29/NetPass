@@ -27,6 +27,9 @@ public class MuTCPEchoClient
 		String sentence = null, modifiedSentence = null;
 		/* Hold user alias (nickname)*/
 		String alias;
+
+		/*Initialize scanner for username input*/
+		Scanner userNameInput;
         
 		System.out.println("-- Client connecting to host/port " + host + "/" + port + " --");
 
@@ -48,6 +51,20 @@ public class MuTCPEchoClient
             }
 
             System.out.println("<-- Connection established  -->");
+
+            // Input the username
+			userNameInput = new Scanner(System.in); 
+
+			// Parse username in a string
+			alias = userNameInput.nextLine();  
+
+			//Forge packet to send to server 
+			//U. means that the message is the user alias
+			String packet = "U. " + alias;
+
+			//Send packet to server with alias
+			outToServer.println(packet);
+
             try
             {
                 /* Continue forever until user types 'exit' */
@@ -73,6 +90,8 @@ public class MuTCPEchoClient
                 outToServer.close();
                 inFromServer.close();
                 clientSocket.close();
+
+                //SWITCH METHODS HERE (The menu at the server)
             } catch (IOException e) {
 				System.out.println("I/O to socket failed: " + host);
             }

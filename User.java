@@ -10,13 +10,15 @@ public class User
 {
 	String userName;
 	String IPAddress;
+	int port;
 	ArrayList<String> memberGroups;
 
-	public User(String userName, String IPAddress, ArrayList<String> memberGroups)
+	public User(String userName, String IPAddress, ArrayList<String> memberGroups, int port)
 	{
 		this.userName = userName;
 		this.IPAddress = IPAddress;
 		this.memberGroups = memberGroups;
+		this.port = port;
 	}
 
 	/* Getter methods */
@@ -38,6 +40,11 @@ public class User
 		return groups;
 	}
 
+	public String getPort()
+	{
+		return port;
+	}
+
 	/* Setter methods */
 	public void setUserName(String userName)
 	{
@@ -52,5 +59,5 @@ public class User
 	public void removeMember(String member)
 	{
 		memberGroups.remove(member);
-	}	
+	}
 }
