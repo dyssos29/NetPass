@@ -19,9 +19,9 @@ import java.util.*;
 
 public class GroupHandler implements Runnable
 {
-	protected ArrayList<Socket> membersList = new ArrayList<Socket>;
+	protected ArrayList<Socket> membersList = new ArrayList<Socket>();
 
-	public Grouphandler(ArrayList<Socket> group)
+	public GroupHandler(ArrayList<Socket> group)
 	{
 		this.membersList = group;
 	}
