@@ -29,7 +29,7 @@ public class MuTCPEchoClient
 		String alias;
 
 		/*Initialize scanner for username input*/
-		Scanner userNameInput;
+		//Scanner userNameInput;
         
 		System.out.println("-- Client connecting to host/port " + host + "/" + port + " --");
 
@@ -53,17 +53,17 @@ public class MuTCPEchoClient
             System.out.println("<-- Connection established  -->");
 
             // Input the username
-			userNameInput = new Scanner(System.in); 
+			//userNameInput = new Scanner(System.in);
 
 			// Parse username in a string
-			alias = userNameInput.nextLine();  
+			//alias = userNameInput.nextLine();
 
 			//Forge packet to send to server 
 			//U. means that the message is the user alias
-			String packet = "U. " + alias;
+			//String packet = "U. " + alias;
 
 			//Send packet to server with alias
-			outToServer.println(packet);
+			//outToServer.println(packet);
 
             try
             {

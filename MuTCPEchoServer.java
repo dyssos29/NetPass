@@ -8,18 +8,31 @@
  */
 
 import java.io.*;
+//<<<<<<< Updated upstream
+import java.util.*;
 import java.net.*;
+//=======
+import java.net.*;
+//>>>>>>> Stashed changes
 
 public class MuTCPEchoServer
 {
     /* This is the port on which the server is running */
     private int serverPort;
-	
+
+    // Keeps the groups and the clients of the entire server
+	private ArrayList<Group> groups;
+	private ArrayList<User> clients;
+	BufferedReader inFromClient;
+
 	/* Constructor Method */
 	public MuTCPEchoServer( int port )
 	{
 		serverPort = port;
+		groups = new ArrayList<Group>();
+		clients = new ArrayList<User>();
 	}  /* End Contrucotr Method */
+
 
 	/* Listen Method */
 	public void listen()
@@ -27,8 +40,8 @@ public class MuTCPEchoServer
 		/* Socket for connections made */
 		Socket connectionSocket = null;
 		/* Server's listening socket */
-		ServerSocket welcomeSocket;          
-		
+		ServerSocket welcomeSocket;
+
 			// Create a socket to listen on.
             try {
 				welcomeSocket = new ServerSocket( serverPort );
@@ -46,12 +59,13 @@ public class MuTCPEchoServer
 				/* Try and accept the connection */
 				try {
                     connectionSocket = welcomeSocket.accept();
+                    inFromClient = new BufferedReader( new InputStreamReader( System.in ) );
                 }
                 catch (IOException e) {
                     System.out.println("Error accepting connection.");
                     continue;
                 }
-	  
+
                 /* A connection was made successfully */
                 System.out.println("<-- Made connection on server socket -->");
                 /* Create a thread to handle it. */
@@ -62,7 +76,12 @@ public class MuTCPEchoServer
 	public void handleClient(Socket clientConnectionSocket)
     {
 		System.out.println("<-- Starting thread to handle connection -->");
-		new Thread(new ConnectionHandler(clientConnectionSocket)).start();
+
+		/*
+		Here initialize ArrayList<Group>, ArrayList<User> and put them in the thread constructor down there.
+		*/
+		//ArrayList<>
+		//new Thread(new ConnectionHandler(clientConnectionSocket, clients, groups)).start();
 	}  /* End handleClient method */
 
 	public static void main( String argv[] ) throws Exception

@@ -40,7 +40,7 @@ public class User
 		return groups;
 	}
 
-	public String getPort()
+	public int getPort()
 	{
 		return port;
 	}
