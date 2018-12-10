@@ -24,7 +24,8 @@ public class ChatGui extends JFrame
     private JScrollPane scrollPanelGroups;
     private JTextField messageText;
     private LoginGui loginGui;
-
+    private GroupGui groupGui;
+    private ChatGui thisFrame;
 
     public ChatGui()
     {
@@ -122,6 +123,19 @@ public class ChatGui extends JFrame
 
     private void addListeners()
     {
+        thisFrame = this;
+
+        sendMessageButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (!messageText.getText().isEmpty())
+                {
+                    messageList.addElement("You: " + messageText.getText());
+                    messageText.setText("");
+                }
+            }
+        });
+
         logoutButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -131,11 +145,24 @@ public class ChatGui extends JFrame
             }
         });
 
+        createGroupButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                groupGui = new GroupGui(thisFrame);
+                groupGui.setVisible(true);
+            }
+        });
+
         closeButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.exit(0);
             }
         });
+    }
+
+    public void setGroupName(String name)
+    {
+        groupList.addElement(name);
     }
 }
