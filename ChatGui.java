@@ -126,14 +126,26 @@ public class ChatGui extends JFrame
         insideNode.add(new DefaultMutableTreeNode("Inside child"));
         root.add(insideNode);
         tree = new JTree(root);
+        tree.setRootVisible(false);
 
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+
         //Icon closedIcon = new ImageIcon("closed.png");
         //Icon openIcon = new ImageIcon("open.png");
-        Icon leafIcon = new ImageIcon("userIcon.png");
+        ImageIcon tempIcon = new ImageIcon("userIcon.png");
+        Image img = tempIcon.getImage();
+        Image newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
+        ImageIcon leafIcon = new ImageIcon(newImg);
+
+        tempIcon = new ImageIcon("groupIcon.png");
+        img = tempIcon.getImage();
+        newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
+        ImageIcon parentIcon = new ImageIcon(newImg);
         //renderer.setClosedIcon(closedIcon);
         //renderer.setOpenIcon(openIcon);
         renderer.setLeafIcon(leafIcon);
+        renderer.setClosedIcon(parentIcon);
+        renderer.setOpenIcon(parentIcon);
 
         scrollPanelGroups = new JScrollPane(tree);
 //        tree = new JTree(new DefaultMutableTreeNode("tree test2"));
