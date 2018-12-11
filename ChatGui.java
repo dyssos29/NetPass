@@ -1,4 +1,8 @@
 import javax.swing.*;
+import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeCellRenderer;
+import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 
@@ -20,7 +24,9 @@ public class ChatGui extends JFrame
     private DefaultListModel<String> userList;
     private JScrollPane scrollPanelUsers;
     private JList groupListGui;
-    private DefaultListModel<String> groupList;
+//    private DefaultListModel<String> groupList;
+    private JTree tree;
+    private DefaultMutableTreeNode root;
     private JScrollPane scrollPanelGroups;
     private JTextField messageText;
     private LoginGui loginGui;
@@ -102,10 +108,37 @@ public class ChatGui extends JFrame
         scrollPanelUsers = new JScrollPane(userListGui);
         addToMainPanel(1,1,2,0,scrollPanelUsers);
 
-        groupList = new DefaultListModel<String>();
-        groupListGui = new JList(groupList);
+//        groupList = new DefaultListModel<String>();
+        String groupStr = "group test";
+        DefaultListModel<String> listModel = new DefaultListModel<String>();
+        listModel.addElement(groupStr);
+        groupListGui = new JList(listModel);
         groupListGui.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        scrollPanelGroups = new JScrollPane(groupListGui);
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Groups");
+        root.add(new DefaultMutableTreeNode("Child1"));
+        root.add(new DefaultMutableTreeNode("Child1"));
+        root.add(new DefaultMutableTreeNode("Child1"));
+        root.add(new DefaultMutableTreeNode("Child1"));
+        root.add(new DefaultMutableTreeNode("Child1"));
+        root.add(new DefaultMutableTreeNode("Child1"));
+        root.add(new DefaultMutableTreeNode("Child1"));
+        DefaultMutableTreeNode insideNode = new DefaultMutableTreeNode("ChildParent");
+        insideNode.add(new DefaultMutableTreeNode("Inside child"));
+        root.add(insideNode);
+        tree = new JTree(root);
+
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        //Icon closedIcon = new ImageIcon("closed.png");
+        //Icon openIcon = new ImageIcon("open.png");
+        Icon leafIcon = new ImageIcon("userIcon.png");
+        //renderer.setClosedIcon(closedIcon);
+        //renderer.setOpenIcon(openIcon);
+        renderer.setLeafIcon(leafIcon);
+
+        scrollPanelGroups = new JScrollPane(tree);
+//        tree = new JTree(new DefaultMutableTreeNode("tree test2"));
+//        scrollPanelGroups.setViewportView(tree);
+        scrollPanelGroups.setPreferredSize(scrollPanelMessages.getPreferredSize());
         addToMainPanel(1,1,2,1,scrollPanelGroups);
 
         logoutButton = new JButton("Logout");
@@ -163,6 +196,7 @@ public class ChatGui extends JFrame
 
     public void setGroupName(String name)
     {
-        groupList.addElement(name);
+        tree = new JTree(new DefaultMutableTreeNode(name));
+        groupListGui.add(tree);
     }
 }
