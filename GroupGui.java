@@ -77,7 +77,8 @@ public class GroupGui extends JFrame
             public void actionPerformed(ActionEvent e) {
                 if(checkIfInputCorrect())
                 {
-
+                    chatGuiWindow.addUserInGroup(aliasText.getText());
+                    aliasText.setText("");
                 }
                 else
                     JOptionPane.showMessageDialog(thisFrame, "Please fill the field.", "Input error", JOptionPane.ERROR_MESSAGE);
