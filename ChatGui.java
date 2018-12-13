@@ -10,6 +10,7 @@ public class ChatGui extends JFrame
 {
     private JPanel mainPanel;
     private JPanel leftPanel;
+    private JPanel buttonPanel;
     private GridBagConstraints gridConstrainsMain;
     private GridBagConstraints gridConstrainsLeft;
     private JLabel recipientLabel;
@@ -19,6 +20,9 @@ public class ChatGui extends JFrame
     private JButton sendMessageButton;
     private JButton closeButton;
     private JButton logoutButton;
+    private JButton removeUserButton;
+    private JButton deleteGroupButton;
+    private JButton joinGroupButton;
     private DefaultListModel<String> messageList;
     private JList messageListGui;
     private JScrollPane scrollPanelMessages;
@@ -51,9 +55,9 @@ public class ChatGui extends JFrame
     private void drawFrame()
     {
         setTitle("NetPass");
-        setSize(600,500);
+        setSize(600,580);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setResizable(false);
+        setResizable(true);
         setLocationRelativeTo(null);
         mainPanel = new JPanel(new GridBagLayout());
         add(mainPanel);
@@ -130,7 +134,7 @@ public class ChatGui extends JFrame
         addToMainPanel(1,1,2,1,scrollPanelGroups);
 
         logoutButton = new JButton("Logout");
-        addToMainPanel(1,1,2,2,logoutButton);
+        addToMainPanel(1,1,2,3,logoutButton);
 
         messageText = new JTextField();
         addToMainPanel(1,1,0,3,messageText);
@@ -139,7 +143,16 @@ public class ChatGui extends JFrame
         addToMainPanel(1,1,1,3,sendMessageButton);
 
         closeButton = new JButton("Close");
-        addToMainPanel(1,1,2,3,closeButton);
+        addToMainPanel(1,1,2,4,closeButton);
+
+
+        buttonPanel = new JPanel();
+        buttonPanel.setPreferredSize(new Dimension(100,35));
+        addToMainPanel(1,1,2,2,buttonPanel);
+
+        deleteGroupButton = new JButton("Delete group");
+        removeUserButton = new JButton("Remove user");
+        joinGroupButton = new JButton("Join group");
     }
 
     private void addListeners()
@@ -194,7 +207,21 @@ public class ChatGui extends JFrame
 
                 /* React to the node selection. */
                 if (!(nodeInfo.equals("Me") || nodeInfo.equals("Your groups")))
+                {
                     recipientLabel.setText(recipientString + node.getUserObject());
+
+                    if (node.isLeaf())
+                    {
+//                        hiddenButton = new JButton("Remove user");
+//                        buttonPanel.add(hiddenButton);
+                        //if (buttonPanel.getl)
+                    }
+                    else
+                    {
+                        //buttonPanel.remove(hiddenButton);
+                    }
+                }
+
             }
         });
     }
