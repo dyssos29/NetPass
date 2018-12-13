@@ -31,6 +31,7 @@ public class ChatGui extends JFrame
     private JScrollPane scrollPanelUsers;
     private JTree tree;
     private DefaultMutableTreeNode root;
+    DefaultMutableTreeNode selectionNodeVariable = null;
     private DefaultTreeModel dm;
     private JScrollPane scrollPanelGroups;
     private JTextField messageText;
@@ -194,34 +195,37 @@ public class ChatGui extends JFrame
             }
         });
 
+        removeUserButton.addActionListener(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dm.removeNodeFromParent(selectionNodeVariable);
+            }
+        });
+
         tree.addTreeSelectionListener(new TreeSelectionListener() {
             public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                        tree.getLastSelectedPathComponent();
+                DefaultMutableTreeNode selectionNode = (DefaultMutableTreeNode)tree.getLastSelectedPathComponent();
 
+                selectionNodeVariable = selectionNode;
                 /* if nothing is selected */
-                if (node == null) return;
+                if (selectionNode == null) return;
 
                 /* retrieve the node that was selected */
-                Object nodeInfo = node.getUserObject();
-
+                Object nodeInfo = selectionNode.getUserObject();
+                buttonPanel.removeAll();
                 /* React to the node selection. */
                 if (!(nodeInfo.equals("Me") || nodeInfo.equals("Your groups")))
                 {
-                    recipientLabel.setText(recipientString + node.getUserObject());
+                    recipientLabel.setText(recipientString + selectionNode.getUserObject());
 
-                    if (node.isLeaf())
-                    {
-//                        hiddenButton = new JButton("Remove user");
-//                        buttonPanel.add(hiddenButton);
-                        //if (buttonPanel.getl)
-                    }
+                    if (selectionNode.isLeaf())
+                        buttonPanel.add(removeUserButton);
                     else
                     {
                         //buttonPanel.remove(hiddenButton);
                     }
                 }
-
+                buttonPanel.repaint();
             }
         });
     }
