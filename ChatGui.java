@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.TreeModelListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.*;
@@ -114,43 +113,11 @@ public class ChatGui extends JFrame
         root.add(new DefaultMutableTreeNode("Your groups"));
         dm = new DefaultTreeModel(root);
         tree = new JTree(dm);
-        tree.setRootVisible(true);
+        tree.setRootVisible(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
-        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
 
-        tree.addTreeSelectionListener(new TreeSelectionListener() {
-            public void valueChanged(TreeSelectionEvent e) {
-                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                        tree.getLastSelectedPathComponent();
-
-                /* if nothing is selected */
-                if (node == null) return;
-
-                /* retrieve the node that was selected */
-                Object nodeInfo = node.getUserObject();
-
-                /* React to the node selection. */
-                if (!nodeInfo.equals("Me"))
-                    recipient.setText(recipientString + node.getUserObject());
-            }
-        });
-
-        ImageIcon tempIcon = new ImageIcon("userIcon.png");
-        Image img = tempIcon.getImage();
-        Image newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
-        ImageIcon leafIcon = new ImageIcon(newImg);
-
-        tempIcon = new ImageIcon("groupIcon.png");
-        img = tempIcon.getImage();
-        newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
-        ImageIcon parentIcon = new ImageIcon(newImg);
-
-        renderer.setLeafIcon(leafIcon);
-        renderer.setClosedIcon(parentIcon);
-        renderer.setOpenIcon(parentIcon);
-
-        usersInGroup = new ArrayList<DefaultMutableTreeNode>();
-        usersInGroup.add(new DefaultMutableTreeNode("Me"));
+        setLeafIconOfTree("userIcon.png",tree);
+        setParentIconOfTree("groupIcon.png",tree);
 
         scrollPanelGroups = new JScrollPane(tree);
         scrollPanelGroups.setPreferredSize(scrollPanelMessages.getPreferredSize());
@@ -207,21 +174,57 @@ public class ChatGui extends JFrame
                 System.exit(0);
             }
         });
+
+        tree.addTreeSelectionListener(new TreeSelectionListener() {
+            public void valueChanged(TreeSelectionEvent e) {
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode)
+                        tree.getLastSelectedPathComponent();
+
+                /* if nothing is selected */
+                if (node == null) return;
+
+                /* retrieve the node that was selected */
+                Object nodeInfo = node.getUserObject();
+
+                /* React to the node selection. */
+                if (!(nodeInfo.equals("Me") || nodeInfo.equals("Your groups")))
+                    recipient.setText(recipientString + node.getUserObject());
+            }
+        });
     }
 
     public void setGroupName(String name)
     {
         DefaultMutableTreeNode insideNode2 = new DefaultMutableTreeNode(name);
         for(DefaultMutableTreeNode node: usersInGroup)
-        {
             insideNode2.add(node);
-        }
 
         dm.insertNodeInto(insideNode2, root, root.getChildCount());
     }
 
     public void addUserInGroup(String userName)
     {
+        usersInGroup = new ArrayList<DefaultMutableTreeNode>();
+        usersInGroup.add(new DefaultMutableTreeNode("Me"));
         usersInGroup.add(new DefaultMutableTreeNode(userName));
+    }
+
+    public void setLeafIconOfTree(String path, JTree tree)
+    {
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        ImageIcon tempIcon = new ImageIcon(path);
+        Image img = tempIcon.getImage();
+        Image newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
+        renderer.setLeafIcon(new ImageIcon(newImg));
+    }
+
+    public void setParentIconOfTree(String path, JTree tree)
+    {
+        DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
+        ImageIcon tempIcon = new ImageIcon(path);
+        Image img = tempIcon.getImage();
+        Image newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
+        renderer.setOpenIcon(new ImageIcon(newImg));
+        renderer.setClosedIcon(new ImageIcon(newImg));
     }
 }
