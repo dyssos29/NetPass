@@ -12,7 +12,8 @@ public class ChatGui extends JFrame
     private JPanel leftPanel;
     private GridBagConstraints gridConstrainsMain;
     private GridBagConstraints gridConstrainsLeft;
-    private JLabel recipient;
+    private JLabel recipientLabel;
+    private JLabel userLabel;
     private String recipientString;
     private JButton createGroupButton;
     private JButton sendMessageButton;
@@ -86,17 +87,22 @@ public class ChatGui extends JFrame
     private void constructLeftPanel()
     {
         leftPanel = new JPanel(new GridBagLayout());
+
+        String username = "username";
+        userLabel = new JLabel("User: " + username);
+        addToLeftPanel(1,0,0,0,userLabel);
+
         recipientString = "Message to: ";
-        recipient = new JLabel(recipientString);
-        addToLeftPanel(1,0,0,0,recipient);
+        recipientLabel = new JLabel(recipientString);
+        addToLeftPanel(1,0,0,1, recipientLabel);
 
         messageList = new DefaultListModel<String>();
         messageListGui = new JList(messageList);
         scrollPanelMessages = new JScrollPane(messageListGui);
-        addToLeftPanel(2,190,0,1,scrollPanelMessages);
+        addToLeftPanel(2,170,0,2,scrollPanelMessages);
 
         createGroupButton = new JButton("+");
-        addToLeftPanel(1,0,1,0,createGroupButton);
+        addToLeftPanel(1,0,1,1,createGroupButton);
     }
 
     private void constructMainPanel()
@@ -188,7 +194,7 @@ public class ChatGui extends JFrame
 
                 /* React to the node selection. */
                 if (!(nodeInfo.equals("Me") || nodeInfo.equals("Your groups")))
-                    recipient.setText(recipientString + node.getUserObject());
+                    recipientLabel.setText(recipientString + node.getUserObject());
             }
         });
     }
@@ -209,7 +215,7 @@ public class ChatGui extends JFrame
         usersInGroup.add(new DefaultMutableTreeNode(userName));
     }
 
-    public void setLeafIconOfTree(String path, JTree tree)
+    private void setLeafIconOfTree(String path, JTree tree)
     {
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         ImageIcon tempIcon = new ImageIcon(path);
@@ -218,7 +224,7 @@ public class ChatGui extends JFrame
         renderer.setLeafIcon(new ImageIcon(newImg));
     }
 
-    public void setParentIconOfTree(String path, JTree tree)
+    private void setParentIconOfTree(String path, JTree tree)
     {
         DefaultTreeCellRenderer renderer = (DefaultTreeCellRenderer) tree.getCellRenderer();
         ImageIcon tempIcon = new ImageIcon(path);
