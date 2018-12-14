@@ -1,63 +1,52 @@
-import java.net.*;
-import java.io.*;
-import java.util.ArrayList;
-/*
-	User class: Saves all the data that is important to be stored for a user
-*/
-
-
+import java.util.*;
 public class User
 {
-	String userName;
-	String IPAddress;
-	int port;
-	ArrayList<String> memberGroups;
+	/*USER CLASS
+	Will contain the username, groups that the user is a member
+	and the right that the user has in each group
+	*/
+	private String userName;
+	private ArrayList<Group> groupMembership;
+	private ArrayList<String> groupRight;
 
-	public User(String userName, String IPAddress, ArrayList<String> memberGroups, int port)
+	//Default constructor (To call the methods for the User class)
+	public User()
+	{
+
+	}
+	
+	public User(String userName, ArrayList<Group> groupMembership, ArrayList<String> groupRight)
 	{
 		this.userName = userName;
-		this.IPAddress = IPAddress;
-		this.memberGroups = memberGroups;
-		this.port = port;
+		this.groupMembership = new ArrayList<>();
+		this.groupRight = new ArrayList<>();
 	}
 
-	/* Getter methods */
-	public String getUserName()
-	{
-		return userName;
-	}
-
-	public String getIPAddress()
-	{
-		return IPAddress;
-	}
-
-	public String getJoinedGroups(ArrayList<String> memberGroups)
-	{
-		String groups = "";
-		for(int i = 0; i < memberGroups.size(); i++)
-			groups = groups + memberGroups.get(i) + ", ";
-		return groups;
-	}
-
-	public int getPort()
-	{
-		return port;
-	}
-
-	/* Setter methods */
 	public void setUserName(String userName)
 	{
 		this.userName = userName;
 	}
 
-	public void addMember(String member)
+	public void setGroupmembership(Group group)
 	{
-		memberGroups.add(member);
+		this.groupMembership.add(group);
 	}
 
-	public void removeMember(String member)
+	public void setGroupRight(String right)
 	{
-		memberGroups.remove(member);
+		this.groupRight.add(right);
+	}
+
+	public String getUserName()
+	{
+		return userName;
+	}
+
+	public Group getGroup(int position)
+	{
+		if(position >= 0 && position < groupMembership.size())
+			return groupMembership.get(position);
+		else
+			return null;
 	}
 }

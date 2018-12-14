@@ -1,86 +1,67 @@
-/* WHERE ALL THE OPERATIONAL LOGIC HAPPENS: IMPORTANT */
-
-import java.net.*;
-import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Group
 {
-	String groupName; 
-	ArrayList<String> members;
-	ArrayList<String> memberRights; 
-	ArrayList<String> memberIPAddresses; 
-	String accessRights;
+	private String groupName;
+	private String creator;
+	private ArrayList<User> members;
+	
+	//Default constructor (To call the methods for the Group class)	
+	public Group()
+	{
 
-	public Group(String groupName, ArrayList<String> members, ArrayList<String> memberRights, ArrayList<String> memberIPAddresses, String accessRights)
+	}
+
+	public Group(String groupName, String creator, ArrayList<User> members)
 	{
 		this.groupName = groupName;
-		this.accessRights = accessRights;
-		/* Arraylists are gonna be filled with packets so they are not initalized */
+		this.creator = creator;
+		this.members = new ArrayList<>();
 	}
-	
-	/* Setter methods */
+
 	public void setGroupName(String groupName)
 	{
 		this.groupName = groupName;
 	}
 
-	public void setAccessRights(String accessRights)
+	public void addMember(User member)
 	{
-		this.accessRights = accessRights;
+		if(!isMember(member))
+			this.members.add(member);
+		else
+			System.out.println("Error: User already in the chat!");
 	}
 
+	public void deleteMember(User member)
+	{
+		if(isMember(member))
+			this.members.remove(member);
+		else
+			System.out.println("Error: User does not exist in the first place");
+	}
 
-	/* Getter methods */
 	public String getGroupName()
 	{
 		return groupName;
 	}
 
-	public String getAccessRights()
+	public String getCreator()
 	{
-		return accessRights;
+		return creator;
+	}
+	
+	public String getMember(User user)
+	{
+		if(isMember(user))
+			return user.getUserName();
+		else
+			return null;
 	}
 
-	/* Arraylist methods */
-
-	public void addMembers(String member)
+	public boolean isMember(User user)
 	{
-		this.members.add(member);
-	}
-
-	public void addMemberRights(String memberRight)
-	{
-		this.memberRights.add(memberRight);
-	}
-
-	public void addMemberIPAddress(String memberIPAaddress)
-	{
-		this.memberIPAddresses.add(memberIPAaddress);
-	}
-
-	public String getMembers()
-	{
-		String list = "";
-		for(int i = 0; i < members.size(); i++)
-			list = list + members.get(i) + ", ";
-		return list;
-	}
-
-	public String getMemberRights()
-	{
-		/* Return all the rights of the group */
-		String rightsList = "";
-		for(int i = 0; i < memberRights.size(); i++)
-			rightsList = rightsList + memberRights.get(i) + ", ";
-		return rightsList;
-	}
-
-	public String getMemberIPAddress()
-	{
-		String ipList = "";
-		for(int i = 0; i < memberIPAddresses.size(); i++)
-			ipList = ipList + memberIPAddresses.get(i) + ", ";
-		return ipList;
+		for(User member : members)
+			return user.getUserName().equals(member.getUserName());
+		return false;
 	}
 }
