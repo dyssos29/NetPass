@@ -101,6 +101,7 @@ public class ConnectionHandler implements Runnable
 						{
 							System.out.println("Inside if --> user: " + user);
 							outToClient.println(content);
+							break;
 						}
 					}
 				}

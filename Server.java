@@ -17,7 +17,7 @@ public class Server
 	private ArrayList<User> users = new ArrayList<User>();
 	private ArrayList<Group> groups = new ArrayList<>();
 
-	private String userNamesList = "", groupNamesList = null;
+	private String userNamesList, groupNamesList;
 
 	/* Listen Method */
 	public void listen()
@@ -90,6 +90,7 @@ public class Server
 	//Methods to retrieve all users or all groups currently operating in the server
 	public String getAllUsers()
 	{
+		userNamesList = "";
 		for(User user : users)
 			userNamesList = userNamesList + user.getUserName() + ",";
 		return userNamesList;
