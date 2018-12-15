@@ -56,7 +56,7 @@ public class Client
 
             ipAddress = clientSocket.getInetAddress().getHostAddress();
             
-            outToServer.println("User " + username + " registered");
+            outToServer.println("User:" + username);
             try
             {	boolean flag = false;
             	Scanner input = new Scanner(System.in);
@@ -120,6 +120,8 @@ public class Client
 						default:
 							break;
 					}
+
+					System.out.println("Answer from server: " + inFromServer.readLine());
 
 					if(flag)
 						break;

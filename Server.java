@@ -17,7 +17,7 @@ public class Server
 	private ArrayList<User> users = new ArrayList<User>();
 	private ArrayList<Group> groups = new ArrayList<>();
 
-	private String userNamesList = null, groupNamesList = null;
+	private String userNamesList = "", groupNamesList = null;
 
 	/* Listen Method */
 	public void listen()
@@ -91,7 +91,7 @@ public class Server
 	public String getAllUsers()
 	{
 		for(User user : users)
-			userNamesList = userNamesList + user.getUserName() + ", ";
+			userNamesList = userNamesList + user.getUserName() + ",";
 		return userNamesList;
 	}
 

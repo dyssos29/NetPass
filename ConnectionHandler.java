@@ -66,11 +66,19 @@ public class ConnectionHandler implements Runnable
 				}
 				catch (IOException e) {
 					System.out.println( echoSocket.getInetAddress() + "-" + peerName + " broke the connection." );
-					break;
 				}
 
+				if (clientSentence.charAt(0) == 'U')
+				{
+					String userNameStr = clientSentence.split(":")[1];
+					System.out.println("User " + userNameStr + " connected");
+					server.addUser(new User(userNameStr,null,null));
+				}
+				else
+				{
+					System.out.println( "Message Received: " + clientSentence );
+				}
 				/* Output to screen the message received by the client */
-				System.out.println( "Message Received: " + clientSentence );
 
 				// Main part of the connection handler
 
@@ -84,13 +92,16 @@ public class ConnectionHandler implements Runnable
 
 					// clientSentence.substring(3, colonPosition - 1);
 					// Send the message to the user with the specfiic username
-					String users = server.getAllUsers();
-					System.out.println("Ody test: " + users);
-					String list[] = users.split(",");
-					for(String user : list)
+					String[] users = server.getAllUsers().split(",");
+					System.out.println("Ody test --> username: " + userName + " content: " + content + " number of users: " + users.length);
+					for(String user : users)
 					{
+						System.out.println("Inside for --> user: " + user);
 						if(userName.equals(user))
+						{
+							System.out.println("Inside if --> user: " + user);
 							outToClient.println(content);
+						}
 					}
 				}
 
@@ -141,7 +152,7 @@ public class ConnectionHandler implements Runnable
 						}
 					}
 				}
-				
+
 				else if( clientSentence.charAt(1) == 'j')
 				{
 					// Logic to join specific group
@@ -235,7 +246,7 @@ public class ConnectionHandler implements Runnable
 				}
 
 				/* If message is exit then terminate specific connection - exit the loop */
-				else if ( clientSentence.equals( "exit" ) ) 
+				else if ( clientSentence.equals( "exit" ) )
 				{
 					System.out.println( "Closing connection with " + echoSocket.getInetAddress() + "." );
 					System.out.println("Bye bye autist XD");
@@ -244,11 +255,6 @@ public class ConnectionHandler implements Runnable
 
 				else
 					System.out.println("Invalid command mate");
-				
-				/* Capitalize the received message */
-				capitalizedSentence = clientSentence.toUpperCase();
-				/* Send it back through socket's output buffer */
-				outToClient.println( capitalizedSentence );
             }
 
             System.out.println("Closing " + peerName + " connection");
