@@ -117,7 +117,7 @@ public class Server
 	}
 
 	// Main method: Where the server will run indefinitely and also listen for incoming connections
-	public static void main( String argv[] ) throws Exception
+	public static void main( String argv[] )
 	{ 
 			int port;
 			port = Integer.parseInt( argv[0] );

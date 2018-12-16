@@ -31,7 +31,7 @@ public class ChatGui extends JFrame
     private JScrollPane scrollPanelUsers;
     private JTree tree;
     private DefaultMutableTreeNode root;
-    DefaultMutableTreeNode selectionNodeVariable = null;
+    private DefaultMutableTreeNode selectionNodeVariable = null;
     private DefaultTreeModel dm;
     private JScrollPane scrollPanelGroups;
     private JTextField messageText;
