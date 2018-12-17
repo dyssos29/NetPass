@@ -125,9 +125,9 @@ public class Client extends Thread
 		outToServer.println(userSentence);
 	}
 
-//	public static void main( String[] args )
-//	{
-//		Client client = new Client(args[0],args[1],args[2],"dyssos");
-//		client.connect();
-//	}
+	public static void main( String[] args )
+	{
+		Client client = new Client(args[0],args[1],args[2],"dyssos");
+		client.start();
+	}
 }

@@ -81,7 +81,7 @@ public class ClientThread extends Thread
 				if (clientSentence.charAt(0) == 'u')
 				{
 					login(clientSentence);
-					sendClientUpdatedClientList();
+					//sendClientUpdatedClientList();
 				}
 				else
 				{
