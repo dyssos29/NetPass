@@ -51,6 +51,21 @@ public class ClientThread extends Thread
 		return clientInfo.getClientPassword();
 	}
 
+	private void sendClientUpdatedClientList()
+	{
+		String clients = "";
+		for (int i = 0; i < server.getNumberOfClientThreads(); i++)
+		{
+			ClientThread tempClientThread = server.getClientThread(i);
+			String clientName = tempClientThread.getUserName();
+			if (!clientInfo.getClientAlias().equals(clientName))
+			{
+				clients += clientName + ",";
+				tempClientThread.sendMessage("l:" + clients);
+			}
+		}
+	}
+
 	/**  * New thread for handling client interaction will start here.   */
 	public void run(  )
 	{
@@ -66,6 +81,7 @@ public class ClientThread extends Thread
 				if (clientSentence.charAt(0) == 'u')
 				{
 					login(clientSentence);
+					sendClientUpdatedClientList();
 				}
 				else
 				{

@@ -15,7 +15,8 @@ public class ChatGui extends JFrame
     private GridBagConstraints gridConstrainsLeft;
     private JLabel recipientLabel;
     private JLabel userLabel;
-    private String recipientString;
+    private String recipientLabelString;
+    private String recipient;
     private JButton createGroupButton;
     private JButton sendMessageButton;
     private JButton closeButton;
@@ -30,18 +31,24 @@ public class ChatGui extends JFrame
     private DefaultListModel<String> userList;
     private JScrollPane scrollPanelUsers;
     private JTree tree;
-    private DefaultMutableTreeNode root;
+    private DefaultMutableTreeNode rootGroups;
+    private DefaultMutableTreeNode rootUsers;
     private DefaultMutableTreeNode selectionNodeVariable = null;
-    private DefaultTreeModel dm;
+    private DefaultTreeModel dmGroups;
+    private DefaultTreeModel dmUsers;
     private JScrollPane scrollPanelGroups;
     private JTextField messageText;
     private LoginGui loginGui;
     private GroupGui groupGui;
     private ChatGui thisFrame;
     private ArrayList<DefaultMutableTreeNode> usersInGroup;
+    private Client client;
 
-    public ChatGui()
+    public ChatGui(Client client)
     {
+        this.client = client;
+        client.setGui(this);
+
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -97,8 +104,8 @@ public class ChatGui extends JFrame
         userLabel = new JLabel("User: " + username);
         addToLeftPanel(1,0,0,0,userLabel);
 
-        recipientString = "Message to: ";
-        recipientLabel = new JLabel(recipientString);
+        recipientLabelString = "Message to: ";
+        recipientLabel = new JLabel(recipientLabelString);
         addToLeftPanel(1,0,0,1, recipientLabel);
 
         messageList = new DefaultListModel<String>();
@@ -112,26 +119,33 @@ public class ChatGui extends JFrame
 
     private void constructMainPanel()
     {
+        Dimension userPanelDimension = new Dimension(259,131);
+
         addToMainPanel(2,3,0,0,leftPanel);
 
-        userList = new DefaultListModel<String>();
-        userListGui = new JList(userList);
-        userListGui.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-        scrollPanelUsers = new JScrollPane(userListGui);
+        rootUsers = new DefaultMutableTreeNode();
+        rootUsers.add(new DefaultMutableTreeNode("Online users"));
+        dmUsers = new DefaultTreeModel(rootUsers);
+        tree = new JTree(dmUsers);
+        tree.setRootVisible(false);
+        tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
+
+        setLeafIconOfTree("userIcon.png",tree);
+        scrollPanelUsers = new JScrollPane(tree);
+        scrollPanelUsers.setPreferredSize(userPanelDimension);
         addToMainPanel(1,1,2,0,scrollPanelUsers);
 
-        root = new DefaultMutableTreeNode();
-        root.add(new DefaultMutableTreeNode("Your groups"));
-        dm = new DefaultTreeModel(root);
-        tree = new JTree(dm);
+        rootGroups = new DefaultMutableTreeNode();
+        rootGroups.add(new DefaultMutableTreeNode("Your groups"));
+        dmGroups = new DefaultTreeModel(rootGroups);
+        tree = new JTree(dmGroups);
         tree.setRootVisible(false);
         tree.getSelectionModel().setSelectionMode(TreeSelectionModel.SINGLE_TREE_SELECTION);
 
         setLeafIconOfTree("userIcon.png",tree);
         setParentIconOfTree("groupIcon.png",tree);
-
         scrollPanelGroups = new JScrollPane(tree);
-        scrollPanelGroups.setPreferredSize(scrollPanelMessages.getPreferredSize());
+        scrollPanelGroups.setPreferredSize(userPanelDimension);
         addToMainPanel(1,1,2,1,scrollPanelGroups);
 
         logoutButton = new JButton("Logout");
@@ -167,6 +181,7 @@ public class ChatGui extends JFrame
                 {
                     messageList.addElement("You: " + messageText.getText());
                     messageText.setText("");
+                    //client.sendPrivateMessage();
                 }
             }
         });
@@ -198,7 +213,7 @@ public class ChatGui extends JFrame
         removeUserButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dm.removeNodeFromParent(selectionNodeVariable);
+                dmGroups.removeNodeFromParent(selectionNodeVariable);
             }
         });
 
@@ -216,7 +231,8 @@ public class ChatGui extends JFrame
                 /* React to the node selection. */
                 if (!(nodeInfo.equals("Me") || nodeInfo.equals("Your groups")))
                 {
-                    recipientLabel.setText(recipientString + selectionNode.getUserObject());
+                    recipient = selectionNode.getUserObject().toString();
+                    recipientLabel.setText(recipientLabelString + recipient);
 
                     if (selectionNode.isLeaf())
                         buttonPanel.add(removeUserButton);
@@ -236,7 +252,7 @@ public class ChatGui extends JFrame
         for(DefaultMutableTreeNode node: usersInGroup)
             insideNode2.add(node);
 
-        dm.insertNodeInto(insideNode2, root, root.getChildCount());
+        dmGroups.insertNodeInto(insideNode2, rootGroups, rootGroups.getChildCount());
     }
 
     public void addUserInGroup(String userName)
@@ -263,5 +279,15 @@ public class ChatGui extends JFrame
         Image newImg = img.getScaledInstance(renderer.getLeafIcon().getIconWidth(),renderer.getLeafIcon().getIconWidth(), Image.SCALE_SMOOTH);
         renderer.setOpenIcon(new ImageIcon(newImg));
         renderer.setClosedIcon(new ImageIcon(newImg));
+    }
+
+    public void updateClients(String[] clients)
+    {
+        DefaultMutableTreeNode insideNode2;
+        for (String client: clients)
+        {
+            insideNode2 = new DefaultMutableTreeNode(client);
+            dmUsers.insertNodeInto(insideNode2, rootUsers, rootUsers.getChildCount());
+        }
     }
 }

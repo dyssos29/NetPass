@@ -60,18 +60,16 @@ public class Server
 
 			System.out.println("<-- Successfully accepted connection from a client -->");
 			System.out.println("<-- Starting thread to handle connection -->");
-			addUser(new ClientThread(connectionSocket,this));
+			addClientThread(new ClientThread(connectionSocket,this));
 		}
 	}  /* End listen method */
-	//
-//    // Methods to retrieve a user or a group through the help of the server
-//
-	public void addUser(ClientThread clientThread)
+    // Methods to retrieve a user or a group through the help of the server
+	private void addClientThread(ClientThread clientThread)
 	{
 		clientThread.start();
 		clientThreadList.add(clientThread);
 	}
-	//
+
 	public ClientThread getClientThread(int index)
 	{
 		return clientThreadList.get(index);
@@ -119,45 +117,6 @@ public class Server
 
 		return number;
 	}
-//
-//    public Group getGroup(String groupName)
-//    {
-//        for(Group group : groups)
-//        {
-//            if(groupName.equals(group.getGroupName()))
-//                return group;
-//        }
-//        return null;
-//    }
-//
-//    //Methods to retrieve all users or all groups currently operating in the server
-//    public String getAllUsers()
-//    {
-//        clientNamesList = "";
-//        for(User user : users)
-//            clientNamesList = clientNamesList + user.getUserName() + ",";
-//        return clientNamesList;
-//    }
-//
-//    public String getAllGroups()
-//    {
-//        if (!groups.isEmpty())
-//        {
-//            for(Group group : groups)
-//                groupNamesList = groupNamesList + group.getGroupName() + ", ";
-//            return groupNamesList;
-//        }
-//        else
-//            return "";
-//    }
-//
-//    //Method to destory a specific group
-//    public void destory(Group groupInput)
-//    {
-//        for( Group group : groups)
-//            if(groupInput.getGroupName().equals(group.getGroupName()))
-//                groups.remove(groupInput);
-//    }
 
 	// Main method: Where the server will run indefinitely and also listen for incoming connections
 	public static void main( String args[] )

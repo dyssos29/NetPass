@@ -14,6 +14,7 @@ public class LoginGui extends JFrame
     private GridBagConstraints gbConstrains;
     private ChatGui chatGuiWindow;
     private JFrame thisFrame;
+    private Client client;
 
     public LoginGui()
     {
@@ -78,7 +79,9 @@ public class LoginGui extends JFrame
             public void actionPerformed(ActionEvent e) {
                 if(checkIfInputsCorrect())
                 {
-                    chatGuiWindow = new ChatGui();
+                    client = new Client("192.168.1.103","5356",aliasText.getText(),password.getPassword().toString());
+                    client.start();
+                    chatGuiWindow = new ChatGui(client);
                     chatGuiWindow.setVisible(true);
                     setVisible(false);
                 }

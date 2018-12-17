@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.*;
 
-public class Client
+public class Client extends Thread
 {
 	/* Our socket end */
 	private Socket clientSocket;
@@ -16,6 +16,7 @@ public class Client
 	private int port;
 	private String alias;
 	private String password;
+	private ChatGui gui;
 
 
 	public Client(String host, String port, String alias, String password)
@@ -24,6 +25,17 @@ public class Client
 		this.port = Integer.parseInt(port);
 		this.alias = alias;
 		this.password = password;
+	}
+
+	@Override
+	public void run() {
+		connect();
+		messageHandler();
+	}
+
+	public void setGui(ChatGui gui)
+	{
+		this.gui = gui;
 	}
 
 	public void connect()
@@ -46,24 +58,20 @@ public class Client
 		}
 
 		System.out.println("<-- Connection established  -->");
+	}  /* End Connect Method */
 
+	private void messageHandler()
+	{
 		try
 		{
 			outToServer.println("user:" + alias + ":" + password);
 
 			System.out.println("Netpass says hello to: " + alias);
-			System.out.println("message:username:message --> message a specific user");
-			System.out.println("view users --> view all the users in the server");
-			System.out.println("view groups --> view all the groups in the server");
-			System.out.println("join group --> join a group");
-			System.out.println("exit group --> exit from a group");
-			System.out.println("delete group --> delete a group (only works if you are the creator of the group)");
-			System.out.println("bye --> exit from the server");
 
 			/* Continue forever until user types 'bye' */
 			while ( true )
 			{
-				startMessageHandler();
+				startMessageReader();
 
 				userSentence = inFromUser.readLine();
 
@@ -86,16 +94,23 @@ public class Client
 		} catch (IOException e) {
 			System.err.println("IOException:  " + e);
 		}
-	}  /* End Connect Method */
+	}
 
-	private void startMessageHandler()
+	private void startMessageReader()
 	{
 		Thread messageThread = new Thread(){
 			@Override
 			public void run() {
 				try {
 					while ((responseFromServer = inFromServer.readLine()) != null)
+					{
+						if (responseFromServer.charAt(0) == 'l')
+						{
+							String[] clients = responseFromServer.split(":")[1].split(",");
+							gui.updateClients(clients);
+						}
 						System.out.println(responseFromServer);
+					}
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -104,9 +119,15 @@ public class Client
 		messageThread.start();
 	}
 
-	public static void main( String[] args )
+	public void sendPrivateMessage(String recipient, String message)
 	{
-		Client client = new Client(args[0],args[1],args[2],"dyssos");
-		client.connect();
+		userSentence = "p:" + recipient + ":" + message;
+		outToServer.println(userSentence);
 	}
+
+//	public static void main( String[] args )
+//	{
+//		Client client = new Client(args[0],args[1],args[2],"dyssos");
+//		client.connect();
+//	}
 }
