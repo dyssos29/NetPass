@@ -4,41 +4,38 @@ public class Group
 {
 	private String groupName;
 	private String creator;
-	private ArrayList<User> members;
-	
-	//Default constructor (To call the methods for the Group class)	
-	public Group()
-	{
+	private ArrayList<String> members;
 
-	}
-
-	public Group(String groupName, String creator, ArrayList<User> members)
+	public Group(String groupName, String creator)
 	{
 		this.groupName = groupName;
 		this.creator = creator;
-		this.members = new ArrayList<>();
+		members = new ArrayList<>();
+		members.add(creator);
 	}
 
-	public void setGroupName(String groupName)
-	{
-		this.groupName = groupName;
-	}
-
-	public void addMember(User member)
+	public void addMember(String member)
 	{
 		if(!isMember(member))
-			this.members.add(member);
+			members.add(member);
 		else
 			System.out.println("Error: User already in the chat!");
 	}
 
-	public void deleteMember(User member)
+	public boolean isMember(String user)
 	{
-		if(isMember(member))
-			this.members.remove(member);
-		else
-			System.out.println("Error: User does not exist in the first place");
+		for(String member : members)
+			if (user.equals(member))
+				return true;
+		return false;
 	}
+//    public void deleteMember(Client member)
+//    {
+//        if(isMember(member))
+//            this.members.remove(member);
+//        else
+//            System.out.println("Error: User does not exist in the first place");
+//    }
 
 	public String getGroupName()
 	{
@@ -49,19 +46,14 @@ public class Group
 	{
 		return creator;
 	}
-	
-	public String getMember(User user)
+
+	public String getMember(int index)
 	{
-		if(isMember(user))
-			return user.getUserName();
-		else
-			return null;
+		return members.get(index);
 	}
 
-	public boolean isMember(User user)
+	public int getNumberOfMembers()
 	{
-		for(User member : members)
-			return user.getUserName().equals(member.getUserName());
-		return false;
+		return members.size();
 	}
 }

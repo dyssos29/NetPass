@@ -18,7 +18,7 @@ public class Wrapper
 //                        first.join();
 //                    } catch (InterruptedException e) {}
 //                }
-                Client.main(new String[] {"192.168.1.73","5356"});
+                Client.main(new String[] {"10.10.12.123","5356"});
                 //System.out.println("Second thread");
             }
         });

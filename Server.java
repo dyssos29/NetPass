@@ -1,128 +1,169 @@
-import java.io.*; 
+import java.io.*;
 import java.net.*;
 import java.util.*;
 
 public class Server
 {
-    /* This is the port on which the server is running */
-    private int serverPort;
-	
+	/* This is the port on which the server is running */
+	private int serverPort;
+	/* Server will contain the total amount of users and groups in the server*/
+	private ArrayList<ClientThread> clientThreadList;
+	private ArrayList<Group> groups;
+	/* The names of the all the clients and groups in total */
+	private String clientNamesList, groupNamesList;
+	/* Socket for connections made */
+	private Socket connectionSocket = null;
+	/* Server's listening socket */
+	private ServerSocket welcomeSocket;
+	// Holds messages we get from client
+	private String clientSentence = "";
+	// Holds messages we send to client
+	private String responseToClient;
+	// Input object
+	private BufferedReader inFromClient;
+	// Output object
+	private PrintStream outToClient;
+
 	/* Constructor Method */
-	public Server( int port )
+	public Server(String port)
 	{
-		serverPort = port;
+		serverPort = Integer.parseInt(port);
+		clientThreadList = new ArrayList<ClientThread>();
+		groups = new ArrayList<>();
 	}  /* End Contrucotr Method */
-
-	/* Server will contain the total ammount of users and groups in the server*/
-	private ArrayList<User> users = new ArrayList<User>();
-	private ArrayList<Group> groups = new ArrayList<>();
-
-	private String userNamesList, groupNamesList;
 
 	/* Listen Method */
 	public void listen()
 	{
-		/* Socket for connections made */
-		Socket connectionSocket = null;
-		/* Server's listening socket */
-		ServerSocket welcomeSocket;          
-		
-			// Create a socket to listen on.
-            try {
-				welcomeSocket = new ServerSocket( serverPort );
-            }
-            catch (IOException e) {
-                System.out.println("Could not use server port " + serverPort);
-                return;
-            }
 
-			// Listen forever for new connections.  When a new connection
-            // is made a new socket is created to handle it.
-            while ( true )
-            {
-                System.out.println("<-- Server listening on socket " + serverPort + " -->");
-				/* Try and accept the connection */
-				try {
-                    connectionSocket = welcomeSocket.accept();
-                }
-                catch (IOException e) {
-                    System.out.println("Error accepting connection.");
-                    continue;
-                }
-	  
-                /* A connection was made successfully */
-                System.out.println("<-- Made connection on server socket -->");
-                /* Create a thread to handle it. */
-				handleClient( connectionSocket );
-            }
+		// Create a socket to listen on.
+		try {
+			welcomeSocket = new ServerSocket( serverPort );
+		}
+		catch (IOException e) {
+			System.err.println("Could not use server port " + serverPort);
+		}
+
+		// Listen forever for new connections.  When a new connection
+		// is made a new socket is created to handle it.
+		while ( true )
+		{
+			System.out.println("<-- Server listening on socket " + serverPort + " -->");
+			/* Try and accept the connection */
+			try {
+				connectionSocket = welcomeSocket.accept();
+			}
+			catch (IOException e) {
+				System.err.println("Error accepting connection.");
+				continue;
+			}
+
+			System.out.println("<-- Successfully accepted connection from a client -->");
+			System.out.println("<-- Starting thread to handle connection -->");
+			addUser(new ClientThread(connectionSocket,this));
+		}
 	}  /* End listen method */
-
-	public void handleClient(Socket clientConnectionSocket)
-    {
-		System.out.println("<-- Starting thread to handle connection -->");
-		new Thread(new ConnectionHandler(clientConnectionSocket, this)).start();
-	}  /* End handleClient method */
-
-	// Methods to retrieve a user or a group through the help of the server
-
-	public void addUser(User chatUser)
+	//
+//    // Methods to retrieve a user or a group through the help of the server
+//
+	public void addUser(ClientThread clientThread)
 	{
-		users.add(chatUser);
+		clientThread.start();
+		clientThreadList.add(clientThread);
+	}
+	//
+	public ClientThread getClientThread(int index)
+	{
+		return clientThreadList.get(index);
 	}
 
-	public User getUser(User userInput, Group groupInput)
+	public int getNumberOfClientThreads()
 	{
-		if(groupInput.isMember(userInput))
-			return userInput;
-		return null;
+		return clientThreadList.size();
 	}
 
-	public Group getGroup(String groupName)
+	public void createGroup(String groupName, String creator)
 	{
-		for(Group group : groups)
+		groups.add(new Group(groupName,creator));
+	}
+
+	public void joinGroup(String clientName, String groupName)
+	{
+		for (Group group: groups)
 		{
-			if(groupName.equals(group.getGroupName()))
-				return group;
+			if (group.getGroupName().equals(groupName))
+				group.addMember(clientName);
 		}
-		return null;
 	}
 
-	//Methods to retrieve all users or all groups currently operating in the server
-	public String getAllUsers()
+	public String getGroupMember(String groupName, int index)
 	{
-		userNamesList = "";
-		for(User user : users)
-			userNamesList = userNamesList + user.getUserName() + ",";
-		return userNamesList;
-	}
-
-	public String getAllGroups()
-	{
-		if (!groups.isEmpty())
+		String member = "";
+		for (Group group: groups)
 		{
-			for(Group group : groups)
-				groupNamesList = groupNamesList + group.getGroupName() + ", ";
-			return groupNamesList;
+			if (group.getGroupName().equals(groupName))
+				member = group.getMember(index);
 		}
-		else
-			return "";
+
+		return member;
 	}
 
-	//Method to destory a specific group
-	public void destory(Group groupInput)
+	public int getNumberOfGroupMembers(String groupName)
 	{
-		for( Group group : groups)
-			if(groupInput.getGroupName().equals(group.getGroupName()))
-				groups.remove(groupInput);
+		int number = 0;
+		for (Group group: groups)
+		{
+			if (group.getGroupName().equals(groupName))
+				number = group.getNumberOfMembers();
+		}
+
+		return number;
 	}
+//
+//    public Group getGroup(String groupName)
+//    {
+//        for(Group group : groups)
+//        {
+//            if(groupName.equals(group.getGroupName()))
+//                return group;
+//        }
+//        return null;
+//    }
+//
+//    //Methods to retrieve all users or all groups currently operating in the server
+//    public String getAllUsers()
+//    {
+//        clientNamesList = "";
+//        for(User user : users)
+//            clientNamesList = clientNamesList + user.getUserName() + ",";
+//        return clientNamesList;
+//    }
+//
+//    public String getAllGroups()
+//    {
+//        if (!groups.isEmpty())
+//        {
+//            for(Group group : groups)
+//                groupNamesList = groupNamesList + group.getGroupName() + ", ";
+//            return groupNamesList;
+//        }
+//        else
+//            return "";
+//    }
+//
+//    //Method to destory a specific group
+//    public void destory(Group groupInput)
+//    {
+//        for( Group group : groups)
+//            if(groupInput.getGroupName().equals(group.getGroupName()))
+//                groups.remove(groupInput);
+//    }
 
 	// Main method: Where the server will run indefinitely and also listen for incoming connections
-	public static void main( String argv[] )
-	{ 
-			int port;
-			port = Integer.parseInt( argv[0] );
-	        Server server = new Server( port );
-			server.listen();
-			System.out.println("<-- Server exiting -->");
+	public static void main( String args[] )
+	{
+		Server server = new Server(args[0]);
+		server.listen();
+		System.out.println("<-- Server exiting -->");
 	}
 }
